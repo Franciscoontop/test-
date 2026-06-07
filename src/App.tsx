@@ -15,7 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-import ChatWidget from "src/components/ChatWidget";   // ← add this import
+import ChatWidget from "./components/ChatWidget.jsx";   // ← add this import
 
 export default function App() {
   return (
