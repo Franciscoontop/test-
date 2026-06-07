@@ -338,7 +338,7 @@ YOUR JOB:
 
       {/* Chat Bubble */}
       <div id="cw-chat-bubble">
-        <svg style={{ width: "30px", height: "30px", fill: "#000" }} viewBox="0 0 24 24">
+        <svg style={{ width: "30px", height: "30px", fill: "#0066fe" }} viewBox="0 0 24 24">
           <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
         </svg>
       </div>
