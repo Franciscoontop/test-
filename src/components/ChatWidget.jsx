@@ -100,19 +100,6 @@ export default function ChatWidget() {
       return !!(S.lead.name && S.lead.email && S.lead.phone && S.lead.service);
     }
 
-    function leadStatus() {
-      return `
-CURRENT LEAD STATUS (check before every reply):
-- Name    : ${S.lead.name    || "MISSING — ask their name first"}
-- Service : ${S.lead.service || "MISSING — ask what service they need"}
-- Email   : ${S.lead.email   || "MISSING — ask after service is known"}
-- Phone   : ${S.lead.phone   || "MISSING — ask last"}
-- Complete: ${isLeadComplete() ? "YES — thank them and say team will be in touch" : "NO — collect what is missing, one at a time"}
-COLLECTION ORDER: Name → Service → Email → Phone
-Never ask for something already collected above.
-`.trim();
-    }
-
     // ── BOOKING BUTTON ───────────────────────────────────────────
     function showBookingButton() {
       const bookingLink = S.SHEET_DATA["booking_link"];
@@ -124,6 +111,19 @@ Never ask for something already collected above.
       wrap.innerHTML = `<a href="${bookingLink}" target="_blank" class="cw-booking-btn">📅 Book Your Appointment →</a>`;
       container.appendChild(wrap);
       container.scrollTop = container.scrollHeight;
+    }
+
+    function leadStatus() {
+      return `
+CURRENT LEAD STATUS (check before every reply):
+- Name    : ${S.lead.name    || "MISSING — ask their name first"}
+- Service : ${S.lead.service || "MISSING — ask what service they need"}
+- Email   : ${S.lead.email   || "MISSING — ask after service is known"}
+- Phone   : ${S.lead.phone   || "MISSING — ask last"}
+- Complete: ${isLeadComplete() ? "YES — thank them and say team will be in touch" : "NO — collect what is missing, one at a time"}
+COLLECTION ORDER: Name → Service → Email → Phone
+Never ask for something already collected above.
+`.trim();
     }
 
     // ── SAVE LEAD ────────────────────────────────────────────────
@@ -171,9 +171,9 @@ YOUR JOB:
           method:  "POST",
           headers: { "Content-Type": "application/json" },
           body:    JSON.stringify({
-            sheetData:     S.SHEET_STRING,
+            sheetData:      S.SHEET_STRING,
             systemContext: systemContext,
-            messages:      S.chatHistory.map(m => ({ role: m.role, content: m.content })),
+            messages:       S.chatHistory.map(m => ({ role: m.role, content: m.content })),
           }),
         });
         const reader  = res.body.getReader();
@@ -233,7 +233,7 @@ YOUR JOB:
         `<div class="cw-message-row cw-ai-row">
            <div class="cw-avatar cw-ai-avatar">
              <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
-               <path d="M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5"/>
+               <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
              </svg>
            </div>
            <div id="${bubbleId}" class="cw-msg-bubble cw-ai-msg cw-thinking-state">
@@ -261,7 +261,7 @@ YOUR JOB:
         `<div class="cw-message-row cw-ai-row">
            <div class="cw-avatar cw-ai-avatar">
              <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
-               <path d="M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5"/>
+               <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
              </svg>
            </div>
            <div class="cw-msg-bubble cw-ai-msg">${text}</div>
@@ -339,7 +339,7 @@ YOUR JOB:
       {/* Chat Bubble */}
       <div id="cw-chat-bubble">
         <svg style={{ width: "30px", height: "30px", fill: "#000" }} viewBox="0 0 24 24">
-          <path d="M19,9L17.75,11.75L15,13L17.75,14.25L19,17L20.25,14.25L23,13L20.25,11.75L19,9M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5M19,1L18.25,2.75L16.5,3.5L18.25,4.25L19,6L19.75,4.25L21.5,3.5L19.75,2.75L19,1Z"/>
+          <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
         </svg>
       </div>
 
