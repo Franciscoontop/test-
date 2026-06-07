@@ -1,8 +1,0 @@
-import { useEffect } from 'react';
-
-export default function AIChatWidget() {
-  useEffect(() => {
-    // Widget is loaded via main.tsx import, nothing needed here
-  }, []);
-  return null;
-}
