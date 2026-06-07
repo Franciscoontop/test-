@@ -14,17 +14,7 @@ import {
   Star,
   CheckCircle2
 } from 'lucide-react';
-
-import ChatWidget from "./components/ChatWidget.jsx";   // ← add this import
-
-export default function App() {
-  return (
-    <>
-      {/* ...your existing app code... */}
-      <ChatWidget />   {/* ← add this once, anywhere inside the return */}
-    </>
-  );
-}
+import ChatWidget from "./components/ChatWidget.jsx";
 
 
 
@@ -90,6 +80,22 @@ const Navbar = () => {
     </nav>
   );
 };
+
+export default function App() {
+  return (
+    <div className="bg-slate-950 min-h-screen font-sans selection:bg-blue-500 selection:text-white bg-mesh">
+      <Navbar />
+      <Hero />
+      <Services />
+      <Stats />
+      <Projects />
+      <WhyUs />
+      <Contact />
+      <Footer />
+      <ChatWidget />   {/* ← ADD THIS LINE */}
+    </div>
+  );
+}
 
 const Hero = () => {
   const { scrollYProgress } = useScroll();
