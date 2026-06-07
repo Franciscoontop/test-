@@ -353,7 +353,7 @@ YOUR JOB:
               <span>● Active Now</span>
             </div>
           </div>
-          <span id="cw-close-chat" style={{ cursor: "pointer", color: "#666", fontSize: "18px" }}>✕</span>
+          <span id="cw-close-chat" style={{ cursor: "pointer", color: "#ffffff", fontSize: "18px" }}>✕</span>
         </div>
         <div id="cw-response-container"></div>
         <div className="cw-input-area">
