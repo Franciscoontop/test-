@@ -62,7 +62,7 @@ export default function ChatWidget() {
       const phoneMatch = text.match(/\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}/);
       if (phoneMatch) S.lead.phone = phoneMatch[0];
       if (!S.lead.name && text.trim().length < 55) {
-        const nameMatch = text.trim().match(/^(?:(?:hi|hey|hello|my name is|i am|i'm|name is|it's|its)\s+)?([a-zA-Z]{2,20})\s+([a-zA-Z]{2,20})$/i);
+        const nameMatch = text.trim().match(/^(?:?:hi|hey|hello|my name is|i am|i'm|name is|it's|its)\s+)?([a-zA-Z]{2,20})\s+([a-zA-Z]{2,20})$/i);
         if (nameMatch) {
           const parts = [nameMatch[nameMatch.length - 2], nameMatch[nameMatch.length - 1]];
           S.lead.name = parts.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
@@ -108,7 +108,7 @@ export default function ChatWidget() {
       if (!container) return;
       const wrap = document.createElement("div");
       wrap.className = "cw-booking-btn-wrap";
-      wrap.innerHTML = `<a href="${bookingLink}" target="_blank" class="cw-booking-btn">📅 Book Your Appointment →</a>`;
+      wrap.innerHTML = `<a href="${bookingLink}" target="_blank" class="cw-booking-btn" style="background-color:#2563eb; color:#ffffff;">📅 Book Your Appointment →</a>`;
       container.appendChild(wrap);
       container.scrollTop = container.scrollHeight;
     }
@@ -231,8 +231,8 @@ YOUR JOB:
       const bubbleId = "cw-ai-" + Date.now();
       container.innerHTML +=
         `<div class="cw-message-row cw-ai-row">
-           <div class="cw-avatar cw-ai-avatar">
-             <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
+           <div class="cw-avatar cw-ai-avatar" style="background-color:#2563eb;">
+             <svg style="width:14px;height:14px;fill:#ffffff" viewBox="0 0 24 24">
                <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
              </svg>
            </div>
@@ -259,8 +259,8 @@ YOUR JOB:
       if (!container) return;
       container.innerHTML =
         `<div class="cw-message-row cw-ai-row">
-           <div class="cw-avatar cw-ai-avatar">
-             <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
+           <div class="cw-avatar cw-ai-avatar" style="background-color:#2563eb;">
+             <svg style="width:14px;height:14px;fill:#ffffff" viewBox="0 0 24 24">
                <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
              </svg>
            </div>
@@ -332,33 +332,37 @@ YOUR JOB:
         <div className="cw-modal-offer">Don't Leave Yet! 🚀</div>
         <div className="cw-modal-text">Get a free demo before you go.</div>
         <div className="cw-promo-code" id="cw-modal-promo">FREE-DEMO</div>
-        <button className="cw-close-modal-btn" id="cw-close-modal-btn">Claim Offer</button>
+        <button className="cw-close-modal-btn" id="cw-close-modal-btn" style={{ backgroundColor: "#2563eb" }}>Claim Offer</button>
         <p className="cw-maybe-later-link" id="cw-maybe-later">Maybe later</p>
       </div>
 
-      {/* Chat Bubble */}
-      <div id="cw-chat-bubble">
-        <svg style={{ width: "30px", height: "30px", fill: "#000" }} viewBox="0 0 24 24">
+      {/* Chat Bubble (Hammer Icon Configured Here) */}
+      <div id="cw-chat-bubble" style={{ backgroundColor: "#2563eb", boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
+        <svg style={{ width: "30px", height: "30px", fill: "#ffffff" }} viewBox="0 0 24 24">
           <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
         </svg>
       </div>
 
       {/* Chat Window */}
-      <div id="cw-chat-window">
-        <div id="cw-chat-header">
+      <div id="cw-chat-window" style={{ backgroundColor: "#0b111e", color: "#ffffff", border: "1px solid #1e293b" }}>
+        <div id="cw-chat-header" style={{ backgroundColor: "#0f172a", borderBottom: "1px solid #1e293b" }}>
           <div className="cw-header-title">
-            <div className="cw-icon-dock"></div>
+            <div className="cw-icon-dock" style={{ backgroundColor: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg style={{ width: "12px", height: "12px", fill: "#ffffff" }} viewBox="0 0 24 24">
+                <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
+              </svg>
+            </div>
             <div className="cw-header-text">
-              <b id="cw-header-agent-name">AI Assistant</b>
-              <span>● Active Now</span>
+              <b id="cw-header-agent-name" style={{ color: "#ffffff" }}>AI Assistant</b>
+              <span style={{ color: "#10b981" }}>● Active Now</span>
             </div>
           </div>
-          <span id="cw-close-chat" style={{ cursor: "pointer", color: "#666", fontSize: "18px" }}>✕</span>
+          <span id="cw-close-chat" style={{ cursor: "pointer", color: "#94a3b8", fontSize: "18px" }}>✕</span>
         </div>
         <div id="cw-response-container"></div>
-        <div className="cw-input-area">
-          <input id="cw-msg" placeholder="Type your question..." autoComplete="off" />
-          <button className="cw-send-btn" id="cw-send-btn">Send</button>
+        <div className="cw-input-area" style={{ borderTop: "1px solid #1e293b", backgroundColor: "#0f172a" }}>
+          <input id="cw-msg" placeholder="Type your question..." autoComplete="off" style={{ backgroundColor: "#1e293b", color: "#ffffff", border: "1px solid #334155" }} />
+          <button className="cw-send-btn" id="cw-send-btn" style={{ backgroundColor: "#2563eb", color: "#ffffff" }}>Send</button>
         </div>
       </div>
     </div>
