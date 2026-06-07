@@ -16,8 +16,6 @@ import {
 } from 'lucide-react';
 import ChatWidget from "./components/ChatWidget.jsx";
 
-
-
 // --- Components ---
 
 const Navbar = () => {
@@ -81,22 +79,6 @@ const Navbar = () => {
   );
 };
 
-export default function App() {
-  return (
-    <div className="bg-slate-950 min-h-screen font-sans selection:bg-blue-500 selection:text-white bg-mesh">
-      <Navbar />
-      <Hero />
-      <Services />
-      <Stats />
-      <Projects />
-      <WhyUs />
-      <Contact />
-      <Footer />
-      <ChatWidget />   {/* ← ADD THIS LINE */}
-    </div>
-  );
-}
-
 const Hero = () => {
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
@@ -104,7 +86,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
-      {/* Background Decorative Elements */}
       <motion.div style={{ y: y1 }} className="absolute top-1/4 -left-20 opacity-20 blur-2xl">
         <div className="w-96 h-96 bg-blue-600 rounded-full" />
       </motion.div>
@@ -112,7 +93,6 @@ const Hero = () => {
         <div className="w-[500px] h-[500px] bg-cyan-400 rounded-full" />
       </motion.div>
 
-      {/* Floating Pipe/Water Elements (Inspired by coffee beans) */}
       <motion.img 
         src="/pipes-abstract.png" 
         alt="Decorative" 
@@ -178,15 +158,10 @@ const Hero = () => {
             className="relative"
           >
             <div className="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-500/10 border border-slate-800">
-              <img 
-                src="/hero-plumbing.jpg" 
-                alt="Elite Plumbing" 
-                className="w-full h-full object-cover"
-              />
+              <img src="/hero-plumbing.jpg" alt="Elite Plumbing" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
             </div>
             
-            {/* Floating Card */}
             <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -207,30 +182,10 @@ const Hero = () => {
 
 const Services = () => {
   const services = [
-    {
-      title: "Leak Detection",
-      desc: "Advanced ultrasonic tech to find leaks without breaking walls.",
-      icon: <Droplets className="w-8 h-8" />,
-      color: "blue"
-    },
-    {
-      title: "Smart Systems",
-      desc: "Installation of smart water shut-off valves and leak sensors.",
-      icon: <Zap className="w-8 h-8" />,
-      color: "cyan"
-    },
-    {
-      title: "Pipe Repair",
-      desc: "High-grade copper and PEX solutions for long-lasting flow.",
-      icon: <Wrench className="w-8 h-8" />,
-      color: "blue"
-    },
-    {
-      title: "24/7 Response",
-      desc: "Middle of the night disaster? We are already on the way.",
-      icon: <Clock className="w-8 h-8" />,
-      color: "indigo"
-    }
+    { title: "Leak Detection", desc: "Advanced ultrasonic tech to find leaks without breaking walls.", icon: <Droplets className="w-8 h-8" />, color: "blue" },
+    { title: "Smart Systems", desc: "Installation of smart water shut-off valves and leak sensors.", icon: <Zap className="w-8 h-8" />, color: "cyan" },
+    { title: "Pipe Repair", desc: "High-grade copper and PEX solutions for long-lasting flow.", icon: <Wrench className="w-8 h-8" />, color: "blue" },
+    { title: "24/7 Response", desc: "Middle of the night disaster? We are already on the way.", icon: <Clock className="w-8 h-8" />, color: "indigo" }
   ];
 
   return (
@@ -249,7 +204,6 @@ const Services = () => {
             From emergency repairs to smart home integrations, we handle your plumbing with white-glove care.
           </p>
         </div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((svc, idx) => (
             <motion.div
@@ -261,13 +215,9 @@ const Services = () => {
               whileHover={{ y: -10 }}
               className="bg-slate-900/50 border border-slate-800 p-8 rounded-[2rem] hover:bg-slate-800/80 transition-all group"
             >
-              <div className="mb-6 text-blue-400 group-hover:scale-110 transition-transform origin-left">
-                {svc.icon}
-              </div>
+              <div className="mb-6 text-blue-400 group-hover:scale-110 transition-transform origin-left">{svc.icon}</div>
               <h3 className="text-xl font-bold text-white mb-3">{svc.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                {svc.desc}
-              </p>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">{svc.desc}</p>
               <button className="flex items-center gap-2 text-blue-400 font-semibold text-sm hover:gap-3 transition-all">
                 Learn More <ChevronRight className="w-4 h-4" />
               </button>
@@ -296,12 +246,8 @@ const Stats = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
           {stats.map((stat, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-4xl lg:text-6xl font-black text-white mb-2 italic tracking-tighter">
-                {stat.value}
-              </div>
-              <div className="text-blue-100 font-medium uppercase tracking-widest text-xs">
-                {stat.label}
-              </div>
+              <div className="text-4xl lg:text-6xl font-black text-white mb-2 italic tracking-tighter">{stat.value}</div>
+              <div className="text-blue-100 font-medium uppercase tracking-widest text-xs">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -330,7 +276,6 @@ const Projects = () => {
             View All Work <ArrowRight className="w-5 h-5" />
           </button>
         </div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {projects.map((p, i) => (
             <motion.div
@@ -377,9 +322,7 @@ const WhyUs = () => {
                         key={i} 
                         className="flex gap-4"
                       >
-                        <div className="bg-blue-600/20 p-3 rounded-2xl text-blue-400 h-fit">
-                          {item.icon}
-                        </div>
+                        <div className="bg-blue-600/20 p-3 rounded-2xl text-blue-400 h-fit">{item.icon}</div>
                         <div>
                           <h4 className="text-white font-bold text-lg mb-1">{item.title}</h4>
                           <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
@@ -389,11 +332,7 @@ const WhyUs = () => {
                   </div>
                </div>
             </div>
-            
-            {/* Number Background Decoration */}
-            <div className="absolute -top-10 -right-10 text-[12rem] font-black text-white/5 leading-none pointer-events-none select-none">
-              01
-            </div>
+            <div className="absolute -top-10 -right-10 text-[12rem] font-black text-white/5 leading-none pointer-events-none select-none">01</div>
           </div>
 
           <div>
@@ -431,12 +370,10 @@ const Contact = () => {
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
              <div className="absolute inset-0 bg-gradient-to-l from-blue-600 to-transparent" />
           </div>
-
           <div className="grid lg:grid-cols-2 gap-16 relative z-10">
             <div>
               <h2 className="text-4xl font-bold text-white mb-6">Let's Fix It Together</h2>
               <p className="text-slate-400 mb-8">Ready to experience elite plumbing service? Send us a message or call our 24/7 hotline.</p>
-              
               <div className="space-y-6">
                 <div className="flex items-center gap-4 text-white">
                   <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
@@ -458,7 +395,6 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-
             <form className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <input type="text" placeholder="Name" className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-blue-500 transition-colors w-full" />
@@ -500,7 +436,6 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          
           <div>
             <h4 className="text-white font-bold mb-6">Quick Links</h4>
             <ul className="space-y-4 text-slate-500 text-sm">
@@ -510,7 +445,6 @@ const Footer = () => {
               <li><a href="#contact" className="hover:text-blue-400">Contact</a></li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-white font-bold mb-6">Legal</h4>
             <ul className="space-y-4 text-slate-500 text-sm">
@@ -539,6 +473,7 @@ export default function App() {
       <WhyUs />
       <Contact />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
