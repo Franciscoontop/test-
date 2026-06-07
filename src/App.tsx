@@ -15,6 +15,19 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+import ChatWidget from "./components/ChatWidget";   // ← add this import
+
+export default function App() {
+  return (
+    <>
+      {/* ...your existing app code... */}
+      <ChatWidget />   {/* ← add this once, anywhere inside the return */}
+    </>
+  );
+}
+
+
+
 // --- Components ---
 
 const Navbar = () => {
