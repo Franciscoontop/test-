@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
+  Droplets, 
+  Wrench, 
   Phone, 
   Clock, 
   ShieldCheck, 
@@ -10,11 +12,10 @@ import {
   ChevronRight,
   Zap,
   Star,
-  CheckCircle2,
-  Plug,
-  Cpu
+  CheckCircle2
 } from 'lucide-react';
 import ChatWidget from "./components/ChatWidget.jsx";
+
 // --- Components ---
 
 const Navbar = () => {
@@ -31,10 +32,10 @@ const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-slate-950/90 backdrop-blur-md py-3 shadow-xl' : 'bg-transparent py-6'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <div className="bg-yellow-400 p-2 rounded-lg">
-            <Zap className="text-slate-950 w-6 h-6" />
+          <div className="bg-blue-600 p-2 rounded-lg">
+            <Droplets className="text-white w-6 h-6" />
           </div>
-          <span className="text-2xl font-bold tracking-tighter text-white">VOLT<span className="text-yellow-400">PRO</span></span>
+          <span className="text-2xl font-bold tracking-tighter text-white">AQUA<span className="text-blue-500">PRO</span></span>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
@@ -85,7 +86,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
-      {/* Background Decorative Elements */}
       <motion.div style={{ y: y1 }} className="absolute top-1/4 -left-20 opacity-20 blur-2xl">
         <div className="w-96 h-96 bg-blue-600 rounded-full" />
       </motion.div>
@@ -93,16 +93,15 @@ const Hero = () => {
         <div className="w-[500px] h-[500px] bg-cyan-400 rounded-full" />
       </motion.div>
 
-      {/* Floating Electric Elements (Inspired by coffee beans) */}
       <motion.img 
-        src="/electric-abstract.png" 
+        src="/pipes-abstract.png" 
         alt="Decorative" 
         className="absolute top-20 right-[10%] w-32 h-32 object-contain hidden lg:block opacity-40"
         animate={{ y: [0, 20, 0], rotate: [0, 10, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.img 
-        src="/electric-abstract.png" 
+        src="/pipes-abstract.png" 
         alt="Decorative" 
         className="absolute bottom-40 left-[5%] w-48 h-48 object-contain hidden lg:block opacity-30 blur-sm"
         animate={{ y: [0, -30, 0], rotate: [0, -15, 0] }}
@@ -121,10 +120,10 @@ const Hero = () => {
               <span className="text-blue-400 text-sm font-semibold uppercase tracking-wider">24/7 Emergency Service</span>
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Powering Your Home, <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-300">Safely</span>
+              Mastering the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Art of Flow</span>
             </h1>
             <p className="text-lg text-slate-400 mb-8 max-w-xl leading-relaxed">
-              Premium electrical solutions for modern homes. From EV chargers to smart wiring, we deliver elite craftsmanship that keeps your home safe and fully energized.
+              Premium plumbing solutions for modern homes. We don't just fix pipes; we ensure your peace of mind with precision engineering and elite service.
             </p>
             <div className="flex flex-wrap gap-4">
               <button className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 transition-all hover:translate-y-[-2px] shadow-xl shadow-blue-600/20">
@@ -159,15 +158,10 @@ const Hero = () => {
             className="relative"
           >
             <div className="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-500/10 border border-slate-800">
-              <img 
-                src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&q=80&w=1200" 
-                alt="Elite Electrical Work" 
-                className="w-full h-full object-cover"
-              />
+              <img src="/hero-plumbing.jpg" alt="Elite Plumbing" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
             </div>
             
-            {/* Floating Card */}
             <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -188,30 +182,10 @@ const Hero = () => {
 
 const Services = () => {
   const services = [
-    {
-      title: "Panel Upgrades",
-      desc: "200-amp modern panel replacements with surge protection and safety inspections.",
-      icon: <Zap className="w-8 h-8" />,
-      color: "yellow"
-    },
-    {
-      title: "Smart Home Wiring",
-      desc: "Full-house CAT6, smart switches, and integrated automation from trusted partners.",
-      icon: <Cpu className="w-8 h-8" />,
-      color: "cyan"
-    },
-    {
-      title: "EV Charger Installs",
-      desc: "Level 2 home charging stations — Tesla, ChargePoint, and universal standards.",
-      icon: <Plug className="w-8 h-8" />,
-      color: "amber"
-    },
-    {
-      title: "24/7 Emergency",
-      desc: "Storm damage? Tripped breaker at midnight? We're already on the way.",
-      icon: <Clock className="w-8 h-8" />,
-      color: "indigo"
-    }
+    { title: "Leak Detection", desc: "Advanced ultrasonic tech to find leaks without breaking walls.", icon: <Droplets className="w-8 h-8" />, color: "blue" },
+    { title: "Smart Systems", desc: "Installation of smart water shut-off valves and leak sensors.", icon: <Zap className="w-8 h-8" />, color: "cyan" },
+    { title: "Pipe Repair", desc: "High-grade copper and PEX solutions for long-lasting flow.", icon: <Wrench className="w-8 h-8" />, color: "blue" },
+    { title: "24/7 Response", desc: "Middle of the night disaster? We are already on the way.", icon: <Clock className="w-8 h-8" />, color: "indigo" }
   ];
 
   return (
@@ -227,10 +201,9 @@ const Services = () => {
             Elite Services
           </motion.h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            From emergency outages to smart home integrations, we handle your electrical needs with white-glove care.
+            From emergency repairs to smart home integrations, we handle your plumbing with white-glove care.
           </p>
         </div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((svc, idx) => (
             <motion.div
@@ -242,13 +215,9 @@ const Services = () => {
               whileHover={{ y: -10 }}
               className="bg-slate-900/50 border border-slate-800 p-8 rounded-[2rem] hover:bg-slate-800/80 transition-all group"
             >
-              <div className="mb-6 text-blue-400 group-hover:scale-110 transition-transform origin-left">
-                {svc.icon}
-              </div>
+              <div className="mb-6 text-blue-400 group-hover:scale-110 transition-transform origin-left">{svc.icon}</div>
               <h3 className="text-xl font-bold text-white mb-3">{svc.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                {svc.desc}
-              </p>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">{svc.desc}</p>
               <button className="flex items-center gap-2 text-blue-400 font-semibold text-sm hover:gap-3 transition-all">
                 Learn More <ChevronRight className="w-4 h-4" />
               </button>
@@ -264,7 +233,7 @@ const Stats = () => {
   const stats = [
     { label: "Years Experience", value: "15+" },
     { label: "Projects Completed", value: "2.5k" },
-    { label: "Expert Electricians", value: "24" },
+    { label: "Expert Plumbers", value: "24" },
     { label: "Customer Rating", value: "4.9" }
   ];
 
@@ -277,12 +246,8 @@ const Stats = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
           {stats.map((stat, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-4xl lg:text-6xl font-black text-white mb-2 italic tracking-tighter">
-                {stat.value}
-              </div>
-              <div className="text-blue-100 font-medium uppercase tracking-widest text-xs">
-                {stat.label}
-              </div>
+              <div className="text-4xl lg:text-6xl font-black text-white mb-2 italic tracking-tighter">{stat.value}</div>
+              <div className="text-blue-100 font-medium uppercase tracking-widest text-xs">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -293,10 +258,10 @@ const Stats = () => {
 
 const Projects = () => {
   const projects = [
-    { title: "Penthouse Panel Overhaul", category: "Residential", img: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&q=80&w=800" },
-    { title: "Smart Home Automation", category: "Technology", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800" },
-    { title: "Dual EV Charger Install", category: "Charging", img: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=800" },
-    { title: "Custom Copper Wiring", category: "Craftsmanship", img: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=800" }
+    { title: "Luxe Penthouse Repiping", category: "Residential", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" },
+    { title: "Smart Water Integration", category: "Technology", img: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=800" },
+    { title: "Commercial Grade HVAC", category: "Commercial", img: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&q=80&w=800" },
+    { title: "Custom Copper Fitting", category: "Industrial", img: "https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&q=80&w=800" }
   ];
 
   return (
@@ -305,13 +270,12 @@ const Projects = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">Masterpiece Projects</h2>
-            <p className="text-slate-400 max-w-xl">Precision and safety combined. View our recent high-end electrical installations.</p>
+            <p className="text-slate-400 max-w-xl">Precision and aesthetics combined. View our recent high-end plumbing installations.</p>
           </div>
           <button className="text-blue-400 font-bold flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b-2 border-blue-500/20">
             View All Work <ArrowRight className="w-5 h-5" />
           </button>
         </div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {projects.map((p, i) => (
             <motion.div
@@ -358,9 +322,7 @@ const WhyUs = () => {
                         key={i} 
                         className="flex gap-4"
                       >
-                        <div className="bg-blue-600/20 p-3 rounded-2xl text-blue-400 h-fit">
-                          {item.icon}
-                        </div>
+                        <div className="bg-blue-600/20 p-3 rounded-2xl text-blue-400 h-fit">{item.icon}</div>
                         <div>
                           <h4 className="text-white font-bold text-lg mb-1">{item.title}</h4>
                           <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
@@ -370,24 +332,20 @@ const WhyUs = () => {
                   </div>
                </div>
             </div>
-            
-            {/* Number Background Decoration */}
-            <div className="absolute -top-10 -right-10 text-[12rem] font-black text-white/5 leading-none pointer-events-none select-none">
-              01
-            </div>
+            <div className="absolute -top-10 -right-10 text-[12rem] font-black text-white/5 leading-none pointer-events-none select-none">01</div>
           </div>
 
           <div>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-8">
               Why Homeowners <br />
-              <span className="text-yellow-400 italic">Choose VoltPro</span>
+              <span className="text-blue-500 italic">Choose AquaPro</span>
             </h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
-              We've spent over a decade refining our craft. In an industry often plagued by no-shows and hidden fees, we stand apart by delivering a premium service experience from the first call to the final inspection.
+              We've spent over a decade refining our craft. In an industry often plagued by delays and poor communication, we stand apart by delivering a premium service experience from the first call to the final inspection.
             </p>
             <div className="space-y-4">
                <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-2xl">
-                 <p className="text-slate-300 italic mb-4">"VoltPro rewired our 1960s home in three days and installed our Tesla charger the same week. Other electricians quoted double and dragged their feet."</p>
+                 <p className="text-slate-300 italic mb-4">"The team at AquaPro fixed a leak two other companies missed. Their tech was impressive and they left my kitchen cleaner than they found it."</p>
                  <div className="flex items-center gap-3">
                    <img src="https://i.pravatar.cc/100?u=sarah" alt="" className="w-10 h-10 rounded-full" />
                    <div>
@@ -412,12 +370,10 @@ const Contact = () => {
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
              <div className="absolute inset-0 bg-gradient-to-l from-blue-600 to-transparent" />
           </div>
-
           <div className="grid lg:grid-cols-2 gap-16 relative z-10">
             <div>
               <h2 className="text-4xl font-bold text-white mb-6">Let's Fix It Together</h2>
-              <p className="text-slate-400 mb-8">Ready to experience elite electrical service? Send us a message or call our 24/7 hotline.</p>
-              
+              <p className="text-slate-400 mb-8">Ready to experience elite plumbing service? Send us a message or call our 24/7 hotline.</p>
               <div className="space-y-6">
                 <div className="flex items-center gap-4 text-white">
                   <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
@@ -430,7 +386,7 @@ const Contact = () => {
                 </div>
                 <div className="flex items-center gap-4 text-white">
                   <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center">
-                    <Zap className="w-6 h-6" />
+                    <Droplets className="w-6 h-6" />
                   </div>
                   <div>
                     <p className="text-sm text-slate-500 font-bold uppercase tracking-widest">Service Area</p>
@@ -439,7 +395,6 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-
             <form className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <input type="text" placeholder="Name" className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-blue-500 transition-colors w-full" />
@@ -465,13 +420,13 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="bg-yellow-400 p-2 rounded-lg">
-                <Zap className="text-slate-950 w-6 h-6" />
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <Droplets className="text-white w-6 h-6" />
               </div>
-              <span className="text-2xl font-bold tracking-tighter text-white">VOLT<span className="text-yellow-400">PRO</span></span>
+              <span className="text-2xl font-bold tracking-tighter text-white">AQUA<span className="text-blue-500">PRO</span></span>
             </div>
             <p className="text-slate-500 max-w-sm mb-6">
-              Setting the standard for electrical excellence. Premium service for those who value quality and reliability.
+              Setting the standard for plumbing excellence. Premium service for those who value quality and reliability.
             </p>
             <div className="flex gap-4">
               {['FB', 'IG', 'TW', 'LI'].map(social => (
@@ -481,7 +436,6 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          
           <div>
             <h4 className="text-white font-bold mb-6">Quick Links</h4>
             <ul className="space-y-4 text-slate-500 text-sm">
@@ -491,7 +445,6 @@ const Footer = () => {
               <li><a href="#contact" className="hover:text-blue-400">Contact</a></li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-white font-bold mb-6">Legal</h4>
             <ul className="space-y-4 text-slate-500 text-sm">
@@ -502,7 +455,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="pt-8 border-t border-slate-900 text-center text-slate-600 text-xs">
-          © {new Date().getFullYear()} VoltPro Electrical Solutions. All rights reserved.
+          © {new Date().getFullYear()} AquaPro Plumbing Solutions. All rights reserved.
         </div>
       </div>
     </footer>
