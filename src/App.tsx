@@ -14,7 +14,7 @@ import {
   Plug,
   Cpu
 } from 'lucide-react';
-import ChatWidget from "./components/ChatWidget.jsx"; // ← top of file
+import ChatWidget from "./components/ChatWidget.jsx";
 // --- Components ---
 
 const Navbar = () => {
