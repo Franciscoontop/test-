@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoltTech - Premium Electrician Services</title>
+    <!-- Modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- BACKGROUND GSAP ANIMATION CONTAINER -->
+    <div id="animation-container">
+      <svg id="wire-svg" viewBox="0 0 100 1000" preserveAspectRatio="none">
+        <path id="wire-path" class="wire-path" d="M 50 0 L 50 300 Q 50 350 80 400 T 50 500 L 50 1000" />
+      </svg>
+      <div id="spark" class="spark"></div>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header>
+      <div class="logo">VoltTech</div>
+      <nav>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Cases</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="socials">
+        <a href="#">IG</a>
+        <a href="#">FB</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- 1. Hero Section (with Background Image) -->
+      <section class="hero" style="background-image: url('/hero_bg.png');">
+        <div class="hero-overlay"></div>
+        <div class="content">
+          <h1>Create</h1>
+          <h1 class="sub-h1">COMFORT</h1>
+        </div>
+      </section>
+
+      <!-- 2. About Section (Text + Image) -->
+      <section class="about">
+        <div class="about-text">
+          <h2>WE ARE LEADERS IN ELECTRICAL</h2>
+          <p>We provide the best electrical solutions for your home. Safety, quality, and modern design are our priorities. We work with state-of-the-art equipment and smart home technologies to ensure your comfort is uncompromised.</p>
+          <button class="cta-btn">VIEW MORE</button>
+        </div>
+        <div class="about-image">
+          <img src="/about_img.png" alt="About VoltTech">
+        </div>
+      </section>
+
+      <!-- 3. Cases / Portfolio Section (Grid) -->
+      <section class="cases">
+        <h2>CASES</h2>
+        <p>Explore our finest smart home and premium lighting installations.</p>
+        <div class="cases-grid">
+          <div class="case-card">
+            <img src="/case_1.png" alt="Smart Panel">
+            <div class="case-overlay">SMART PANEL</div>
+          </div>
+          <div class="case-card">
+            <img src="/case_2.png" alt="Kitchen LED">
+            <div class="case-overlay">KITCHEN LED</div>
+          </div>
+          <div class="case-card">
+            <img src="/case_3.png" alt="Industrial Room">
+            <div class="case-overlay">INDUSTRIAL ROOM</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Contact Form Section (with Background Image) -->
+      <section class="contact" style="background-image: url('/contact_bg.png');">
+        <div class="hero-overlay"></div>
+        <div class="contact-form-block">
+          <h2>LEAVE YOUR CONTACTS</h2>
+          <p>And we will call you back</p>
+          <form onsubmit="event.preventDefault();">
+            <input type="text" placeholder="How should we address you?">
+            <input type="text" placeholder="Your phone number">
+            <input type="text" placeholder="Briefly about the task">
+            <button type="submit" class="cta-btn" style="margin-top: 1rem;">SUBMIT REQUEST</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
