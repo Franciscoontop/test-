@@ -1,36 +1,168 @@
 // ================================================================
-// ChatWidget.jsx
-// DROP THIS FILE INTO: src/components/ChatWidget.jsx
-// Then add <ChatWidget /> anywhere in your App.jsx
+// ChatWidget.jsx — SINGLE FILE, no external CSS needed
+// DROP INTO: src/components/ChatWidget.jsx
+// Add <ChatWidget /> to your App.jsx — that's it.
 // ================================================================
 
 import { useEffect, useRef } from "react";
-import "../styles/ChatWidget.css";
 
-// ── CONFIG — change these per client ──────────────────────────────
 const CONFIG = {
-  SHEET_URL:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVsTHX1E0Jd-f2oVoNH8N2YXdzgPZcn6iwmHE7GM8-nvMkZxZ93KEtN0jyCd4iqu1NjvBvmcOx9eu7/pub?output=csv",      // ← paste your published sheet CSV URL
-  LEADS_SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQlBMQchxKbi_7n7S14M3Ebu1p-y1r7iACmRqR6rY_PFk8aEae0LSxQ38nLEs2ZxH8ObairuBy-Wtk/pub?output=csv",   // ← paste your Apps Script web app URL
+  SHEET_URL:       "YOUR_GOOGLE_SHEET_CSV_URL",
+  LEADS_SHEET_URL: "YOUR_GOOGLE_APPS_SCRIPT_URL",
   AGENT_NAME:      "AI Assistant",
-  API_ROUTE:       "/api/chat",                      // ← keep as-is if using Vercel
+  API_ROUTE:       "/api/chat",
 };
-// ─────────────────────────────────────────────────────────────────
+
+const STYLES = `
+  #cw-widget-wrapper {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 2147483647;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  #cw-exit-modal {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -45%) scale(0.95);
+    width: 90%; max-width: 400px;
+    background: #111; border: 1px solid #333; border-radius: 24px;
+    padding: 40px; text-align: center;
+    box-shadow: 0px 30px 60px rgba(0,0,0,0.9);
+    pointer-events: none; z-index: 2147483648;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.165,0.84,0.44,1), visibility 0.5s;
+  }
+  #cw-exit-modal.cw-active {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .cw-modal-offer  { font-size: 26px; font-weight: bold; margin-bottom: 12px; color: #fff; }
+  .cw-modal-text   { font-size: 16px; margin-bottom: 24px; color: #aaa; }
+  .cw-promo-code   { background: #1a1a1a; border: 1px dashed #444; padding: 12px 24px; font-size: 22px; font-weight: bold; border-radius: 12px; margin-bottom: 24px; color: #fff; }
+  .cw-close-modal-btn { background: #fff; color: #000; border: none; padding: 14px 30px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 15px; }
+  .cw-maybe-later-link { font-size: 12px; color: #555; margin-top: 20px; cursor: pointer; }
+  #cw-chat-bubble {
+    position: absolute; bottom: 20px; right: 20px;
+    width: 60px; height: 60px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    z-index: 2147483649;
+    transition: bottom 0.8s cubic-bezier(0.34,1.56,0.64,1),
+                right 0.8s cubic-bezier(0.34,1.56,0.64,1),
+                width 0.5s ease, height 0.5s ease,
+                transform 0.8s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.3s ease;
+  }
+  #cw-chat-bubble svg { transition: all 0.6s ease; }
+  #cw-chat-bubble.cw-active-spiral {
+    bottom: 607px; right: 353px; width: 26px; height: 26px;
+    transform: rotate(720deg); box-shadow: none;
+  }
+  #cw-chat-bubble.cw-active-spiral svg { width: 14px; height: 14px; fill: #000; }
+  #cw-chat-window {
+    position: absolute; bottom: 90px; right: 20px;
+    width: 370px; height: 560px; max-height: 85svh;
+    background: #111; border: 1px solid #333; border-radius: 20px;
+    display: none; flex-direction: column;
+    box-shadow: 0px 15px 50px rgba(0,0,0,0.9);
+    pointer-events: auto; overflow: hidden;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  #cw-chat-window.cw-open { display: flex; opacity: 1; }
+  #cw-chat-header {
+    background: #1a1a1a; padding: 14px 16px;
+    border-bottom: 1px solid #333;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  .cw-header-title { display: flex; align-items: center; gap: 10px; }
+  .cw-icon-dock { width: 26px; height: 26px; border-radius: 50%; background: #fff; flex-shrink: 0; }
+  .cw-header-text b    { display: block; font-size: 14px; color: #fff; }
+  .cw-header-text span { font-size: 11px; color: #00ff88; }
+  #cw-response-container {
+    flex: 1; padding: 14px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    background: #050505; scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cw-message-row { display: flex; align-items: flex-end; gap: 8px; max-width: 88%; }
+  .cw-ai-row   { align-self: flex-start; }
+  .cw-user-row { align-self: flex-end; flex-direction: row-reverse; }
+  .cw-avatar     { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cw-ai-avatar   { background: #fff; }
+  .cw-user-avatar { background: #333; font-size: 10px; color: #aaa; border: 1px solid #444; }
+  .cw-msg-bubble { padding: 10px 14px; border-radius: 15px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; }
+  .cw-ai-msg   { background: #222; color: #fff; border: 1px solid #333; border-bottom-left-radius: 4px; }
+  .cw-user-msg { background: #fff; color: #000; border-bottom-right-radius: 4px; }
+  .cw-booking-btn-wrap { padding: 4px 14px 10px; }
+  .cw-booking-btn {
+    display: block; width: 100%; padding: 12px;
+    background: #fff; color: #000; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: bold; text-align: center;
+    text-decoration: none; cursor: pointer; transition: background 0.2s;
+  }
+  .cw-booking-btn:hover { background: #e0e0e0; }
+  .cw-thinking-state { display: inline-flex !important; width: auto !important; padding: 6px 12px !important; align-items: center; }
+  .cw-thinking-dots { display: inline-flex; align-items: center; gap: 3px; }
+  .cw-dot { width: 4px; height: 4px; background: #888; border-radius: 50%; animation: cw-bounce 1.4s infinite ease-in-out; }
+  .cw-dot:nth-child(2) { animation-delay: 0.2s; }
+  .cw-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes cw-bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+  .cw-input-area {
+    padding: 12px 14px; background: #111;
+    border-top: 1px solid #333; display: flex; gap: 8px;
+    flex-shrink: 0; align-items: center;
+  }
+  .cw-input-area input {
+    flex: 1; padding: 10px 14px; background: #1a1a1a;
+    border: 1px solid #444; color: #fff; border-radius: 22px;
+    outline: none; font-size: max(16px, 14px);
+  }
+  .cw-send-btn {
+    padding: 10px 16px; background: #fff; color: #000;
+    border: none; border-radius: 22px; cursor: pointer;
+    font-weight: bold; font-size: 13px; flex-shrink: 0; white-space: nowrap;
+  }
+  @media (max-width: 480px) {
+    #cw-chat-bubble { bottom: 16px; right: 16px; width: 54px; height: 54px; }
+    #cw-chat-window {
+      position: fixed; bottom: 0; right: 0; left: 0; top: 0;
+      width: 100%; height: 100%; max-height: 100%;
+      border-radius: 0; border: none;
+    }
+    #cw-chat-bubble.cw-active-spiral { opacity: 0; pointer-events: none; transform: none; }
+    .cw-msg-bubble { font-size: 15px; }
+    .cw-input-area { padding: 12px 16px 20px; }
+    .cw-input-area input { padding: 12px 16px; }
+    .cw-send-btn { padding: 12px 18px; }
+    .cw-message-row { max-width: 92%; }
+    #cw-exit-modal { padding: 28px 20px; }
+    .cw-modal-offer { font-size: 22px; }
+  }
+  @media (min-width: 481px) and (max-width: 768px) {
+    #cw-chat-window { width: calc(100vw - 32px); right: 16px; bottom: 84px; }
+  }
+`;
 
 export default function ChatWidget() {
-  // All mutable state lives in refs so we don't re-render the whole tree
   const stateRef = useRef({
-    SHEET_STRING: "",
-    SHEET_DATA:   {},
-    chatHistory:  [],
-    hasPopped:    false,
-    leadSent:     false,
+    SHEET_STRING: "", SHEET_DATA: {}, chatHistory: [],
+    hasPopped: false, leadSent: false,
     lead: { name: null, email: null, phone: null, service: null },
   });
 
   useEffect(() => {
+    // Inject styles once
+    if (!document.getElementById("cw-styles")) {
+      const tag = document.createElement("style");
+      tag.id = "cw-styles";
+      tag.innerHTML = STYLES;
+      document.head.appendChild(tag);
+    }
+
     const S = stateRef.current;
 
-    // ── SHEET LOADER ─────────────────────────────────────────────
     async function loadSheet() {
       try {
         const res = await fetch(CONFIG.SHEET_URL + "&cb=" + Date.now());
@@ -39,7 +171,7 @@ export default function ChatWidget() {
           const [key, ...rest] = row.split(",");
           if (key?.trim()) S.SHEET_DATA[key.trim().toLowerCase()] = rest.join(",").trim();
         });
-        S.SHEET_STRING = Object.entries(S.SHEET_DATA).map(([k, v]) => `${k}: ${v}`).join(" | ");
+        S.SHEET_STRING = Object.entries(S.SHEET_DATA).map(([k,v]) => `${k}: ${v}`).join(" | ");
         if (S.SHEET_DATA["promos"]) {
           const el = document.getElementById("cw-modal-promo");
           if (el) el.innerText = S.SHEET_DATA["promos"];
@@ -48,13 +180,11 @@ export default function ChatWidget() {
         if (nameEl) nameEl.innerText = S.SHEET_DATA["agent_name"] || CONFIG.AGENT_NAME;
         const bizName = S.SHEET_DATA["business_name"] || "us";
         setGreeting(`Hey! 👋 Welcome to ${bizName}. I'm here to help you find the right service. What's your name?`);
-      } catch (err) {
-        console.warn("Sheet load failed:", err);
+      } catch {
         setGreeting("Hey! 👋 I'm here to help. What's your name so I can get started?");
       }
     }
 
-    // ── LEAD EXTRACTION ──────────────────────────────────────────
     function extractLeadData(text) {
       const lower = text.toLowerCase().trim();
       const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
@@ -62,142 +192,86 @@ export default function ChatWidget() {
       const phoneMatch = text.match(/\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}/);
       if (phoneMatch) S.lead.phone = phoneMatch[0];
       if (!S.lead.name && text.trim().length < 55) {
-        const nameMatch = text.trim().match(/^(?:(?:hi|hey|hello|my name is|i am|i'm|name is|it's|its)\s+)?([a-zA-Z]{2,20})\s+([a-zA-Z]{2,20})$/i);
-        if (nameMatch) {
-          const parts = [nameMatch[nameMatch.length - 2], nameMatch[nameMatch.length - 1]];
-          S.lead.name = parts.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
-        }
+        const nm = text.trim().match(/^(?:(?:hi|hey|hello|my name is|i am|i'm|name is|it's|its)\s+)?([a-zA-Z]{2,20})\s+([a-zA-Z]{2,20})$/i);
+        if (nm) S.lead.name = [nm[nm.length-2], nm[nm.length-1]].map(w => w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
       }
       if (!S.lead.service) {
-        if (S.SHEET_DATA["services"]) {
-          const services = S.SHEET_DATA["services"].split("|").map(s => s.trim().toLowerCase());
-          const matched  = services.find(s => lower.includes(s.split(" ")[0]));
-          if (matched) S.lead.service = matched;
-        }
-        if (!S.lead.service) {
-          const keywords = ["haircut","fade","beard","cut","trim","color","blowout","booking",
-            "appointment","massage","nails","lashes","wax","facial","cleaning","plumbing",
-            "hvac","design","website","consult","repair","install","coaching","training",
-            "landscaping","detailing","painting","electrical"];
-          const found = keywords.find(w => lower.includes(w));
-          if (found) S.lead.service = found;
-        }
-      }
-      if (!S.lead.service && S.chatHistory.length > 0) {
-        const lastAI = S.chatHistory.filter(m => m.role === "assistant").pop();
-        if (lastAI) {
-          const aiKeywords = ["haircut","fade","beard","trim","color","blowout","coaching",
-            "training","massage","nails","lashes","wax","facial","cleaning","plumbing",
-            "hvac","design","website","consult","repair","install","landscaping",
-            "detailing","painting","electrical","strength"];
-          const found = aiKeywords.find(w => lastAI.content.toLowerCase().includes(w));
-          if (found) S.lead.service = found;
-        }
+        const keywords = ["haircut","fade","beard","cut","trim","color","blowout","booking","appointment",
+          "massage","nails","lashes","wax","facial","cleaning","plumbing","hvac","design","website",
+          "consult","repair","install","coaching","training","landscaping","detailing","painting","electrical"];
+        const found = keywords.find(w => lower.includes(w));
+        if (found) S.lead.service = found;
       }
     }
 
-    function isLeadComplete() {
-      return !!(S.lead.name && S.lead.email && S.lead.phone && S.lead.service);
+    function isLeadComplete() { return !!(S.lead.name && S.lead.email && S.lead.phone && S.lead.service); }
+
+    function leadStatus() {
+      return `CURRENT LEAD STATUS:
+- Name   : ${S.lead.name    || "MISSING — ask first"}
+- Service: ${S.lead.service || "MISSING — ask after name"}
+- Email  : ${S.lead.email   || "MISSING — ask after service"}
+- Phone  : ${S.lead.phone   || "MISSING — ask last"}
+- Complete: ${isLeadComplete() ? "YES — thank them" : "NO — collect missing, one at a time"}
+Order: Name → Service → Email → Phone. Never re-ask collected fields.`;
     }
 
-    // ── BOOKING BUTTON ───────────────────────────────────────────
     function showBookingButton() {
-      const bookingLink = S.SHEET_DATA["booking_link"];
-      if (!bookingLink) return;
+      const link = S.SHEET_DATA["booking_link"];
+      if (!link) return;
       const container = document.getElementById("cw-response-container");
       if (!container) return;
       const wrap = document.createElement("div");
       wrap.className = "cw-booking-btn-wrap";
-      wrap.innerHTML = `<a href="${bookingLink}" target="_blank" class="cw-booking-btn">📅 Book Your Appointment →</a>`;
+      wrap.innerHTML = `<a href="${link}" target="_blank" class="cw-booking-btn">📅 Book Your Appointment →</a>`;
       container.appendChild(wrap);
       container.scrollTop = container.scrollHeight;
     }
 
-    function leadStatus() {
-      return `
-CURRENT LEAD STATUS (check before every reply):
-- Name    : ${S.lead.name    || "MISSING — ask their name first"}
-- Service : ${S.lead.service || "MISSING — ask what service they need"}
-- Email   : ${S.lead.email   || "MISSING — ask after service is known"}
-- Phone   : ${S.lead.phone   || "MISSING — ask last"}
-- Complete: ${isLeadComplete() ? "YES — thank them and say team will be in touch" : "NO — collect what is missing, one at a time"}
-COLLECTION ORDER: Name → Service → Email → Phone
-Never ask for something already collected above.
-`.trim();
-    }
-
-    // ── SAVE LEAD ────────────────────────────────────────────────
     async function saveLeadToSheet() {
       if (S.leadSent) return;
       S.leadSent = true;
-      const bizName    = S.SHEET_DATA["business_name"] || "Your Business";
       const transcript = S.chatHistory.map(m => `${m.role === "user" ? "Customer" : "AI"}: ${m.content}`).join("\n");
       try {
         await fetch(CONFIG.LEADS_SHEET_URL, {
-          method:  "POST",
-          mode:    "no-cors",
+          method: "POST", mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ name: S.lead.name, service: S.lead.service, email: S.lead.email, phone: S.lead.phone, business: bizName, transcript }),
+          body: JSON.stringify({ ...S.lead, business: S.SHEET_DATA["business_name"] || "Business", transcript }),
         });
-      } catch (err) {
-        console.error("Sheet save failed:", err);
-        S.leadSent = false;
-      }
+      } catch { S.leadSent = false; }
     }
 
-    // ── STREAM RESPONSE ──────────────────────────────────────────
     async function streamResponse(bubbleId) {
-      const bubble    = document.getElementById(bubbleId);
+      const bubble = document.getElementById(bubbleId);
       const container = document.getElementById("cw-response-container");
-      const systemContext = `
-You are a helpful AI sales assistant for this business.
-Be friendly, direct, and conversational. Never sound robotic.
-Complete every sentence fully — never cut off mid-thought.
-BUSINESS INFO:
-${S.SHEET_STRING || "No business info loaded"}
+      const systemContext = `You are a helpful AI sales assistant. Be friendly and conversational.
+BUSINESS INFO: ${S.SHEET_STRING || "No info loaded"}
 ${leadStatus()}
-YOUR JOB:
-1. Collection order: Name → Service → Email → Phone
-2. Get name first, then service, then email, then phone — one at a time.
-3. Keep replies to 2-3 sentences. Always end with a question.
-4. When lead is complete say: "Perfect! The team will reach out to you shortly about [service]."
-5. Never make up services — only discuss what is in the business info above.
-`.trim();
+RULES: Collect Name→Service→Email→Phone one at a time. 2-3 sentences max. Always end with a question.
+When complete: "Perfect! The team will reach out shortly about [service]."`;
 
-      let fullReply = "";
-      let hasStartedTyping = false;
+      let fullReply = "", started = false;
       try {
         const res = await fetch(CONFIG.API_ROUTE, {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({
-            sheetData:      S.SHEET_STRING,
-            systemContext: systemContext,
-            messages:       S.chatHistory.map(m => ({ role: m.role, content: m.content })),
-          }),
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sheetData: S.SHEET_STRING, systemContext, messages: S.chatHistory }),
         });
-        const reader  = res.body.getReader();
+        const reader = res.body.getReader();
         const decoder = new TextDecoder();
-        let buffer    = "";
+        let buffer = "";
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
+          const lines = buffer.split("\n"); buffer = lines.pop() || "";
           for (const line of lines) {
             if (!line.trim().startsWith("data: ")) continue;
             const raw = line.trim().slice(6);
             if (!raw || raw === "[DONE]") continue;
             try {
-              const parsed  = JSON.parse(raw);
-              const content = parsed.choices?.[0]?.delta?.content;
+              const content = JSON.parse(raw).choices?.[0]?.delta?.content;
               if (content) {
-                if (!hasStartedTyping) {
-                  bubble.classList.remove("cw-thinking-state");
-                  bubble.innerHTML = "";
-                  hasStartedTyping = true;
-                }
+                if (!started) { bubble.classList.remove("cw-thinking-state"); bubble.innerHTML = ""; started = true; }
                 fullReply += content;
                 bubble.innerText = fullReply;
                 if (container) container.scrollTop = container.scrollHeight;
@@ -205,93 +279,52 @@ YOUR JOB:
             } catch (_) {}
           }
         }
-      } catch (err) {
-        if (bubble) bubble.innerHTML = "<i>Connection lost. Please try again.</i>";
-      }
+      } catch { if (bubble) bubble.innerHTML = "<i>Connection lost. Please try again.</i>"; }
       return fullReply;
     }
 
-    // ── SEND MESSAGE ─────────────────────────────────────────────
     async function send(overrideMsg = null) {
-      const input     = document.getElementById("cw-msg");
+      const input = document.getElementById("cw-msg");
       const container = document.getElementById("cw-response-container");
-      const userText  = overrideMsg || input?.value.trim();
+      const userText = overrideMsg || input?.value.trim();
       if (!userText) return;
-
-      container.innerHTML +=
-        `<div class="cw-message-row cw-user-row">
-           <div class="cw-avatar cw-user-avatar">U</div>
-           <div class="cw-msg-bubble cw-user-msg">${userText}</div>
-         </div>`;
+      container.innerHTML += `<div class="cw-message-row cw-user-row"><div class="cw-avatar cw-user-avatar">U</div><div class="cw-msg-bubble cw-user-msg">${userText}</div></div>`;
       if (!overrideMsg && input) input.value = "";
-
       extractLeadData(userText);
       S.chatHistory.push({ role: "user", content: userText });
-
       const bubbleId = "cw-ai-" + Date.now();
-      container.innerHTML +=
-        `<div class="cw-message-row cw-ai-row">
-           <div class="cw-avatar cw-ai-avatar">
-             <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
-               <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
-             </svg>
-           </div>
-           <div id="${bubbleId}" class="cw-msg-bubble cw-ai-msg cw-thinking-state">
-             <div class="cw-thinking-dots">
-               <div class="cw-dot"></div><div class="cw-dot"></div><div class="cw-dot"></div>
-             </div>
-           </div>
-         </div>`;
-      if (container) container.scrollTop = container.scrollHeight;
-
+      container.innerHTML += `<div class="cw-message-row cw-ai-row"><div class="cw-avatar cw-ai-avatar"><svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24"><path d="M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5"/></svg></div><div id="${bubbleId}" class="cw-msg-bubble cw-ai-msg cw-thinking-state"><div class="cw-thinking-dots"><div class="cw-dot"></div><div class="cw-dot"></div><div class="cw-dot"></div></div></div></div>`;
+      container.scrollTop = container.scrollHeight;
       const reply = await streamResponse(bubbleId);
       S.chatHistory.push({ role: "assistant", content: reply });
-
-      if (isLeadComplete() && !S.leadSent) {
-        saveLeadToSheet();
-        showBookingButton();
-      }
+      if (isLeadComplete() && !S.leadSent) { saveLeadToSheet(); showBookingButton(); }
     }
 
-    // ── UI HELPERS ────────────────────────────────────────────────
     function setGreeting(text) {
       const container = document.getElementById("cw-response-container");
       if (!container) return;
-      container.innerHTML =
-        `<div class="cw-message-row cw-ai-row">
-           <div class="cw-avatar cw-ai-avatar">
-             <svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24">
-               <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
-             </svg>
-           </div>
-           <div class="cw-msg-bubble cw-ai-msg">${text}</div>
-         </div>`;
+      container.innerHTML = `<div class="cw-message-row cw-ai-row"><div class="cw-avatar cw-ai-avatar"><svg style="width:14px;height:14px;fill:#000" viewBox="0 0 24 24"><path d="M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5"/></svg></div><div class="cw-msg-bubble cw-ai-msg">${text}</div></div>`;
     }
 
     function toggleChat() {
-      const win    = document.getElementById("cw-chat-window");
+      const win = document.getElementById("cw-chat-window");
       const bubble = document.getElementById("cw-chat-bubble");
       const mobile = window.innerWidth <= 480;
       if (!win || !bubble) return;
       if (win.classList.contains("cw-open")) {
-        win.classList.remove("cw-open");
-        bubble.classList.remove("cw-active-spiral");
+        win.classList.remove("cw-open"); bubble.classList.remove("cw-active-spiral");
         if (mobile) { bubble.style.opacity = "1"; bubble.style.pointerEvents = "auto"; }
         setTimeout(() => { win.style.display = "none"; }, 400);
       } else {
         win.style.display = "flex";
         setTimeout(() => {
-          win.classList.add("cw-open");
-          bubble.classList.add("cw-active-spiral");
+          win.classList.add("cw-open"); bubble.classList.add("cw-active-spiral");
           if (mobile) { bubble.style.opacity = "0"; bubble.style.pointerEvents = "none"; }
         }, 10);
       }
     }
 
-    function closeModal() {
-      document.getElementById("cw-exit-modal")?.classList.remove("cw-active");
-    }
-
+    function closeModal() { document.getElementById("cw-exit-modal")?.classList.remove("cw-active"); }
     function claimOffer() {
       const promo = document.getElementById("cw-modal-promo")?.innerText;
       closeModal();
@@ -299,7 +332,6 @@ YOUR JOB:
       send(`I want to claim the ${promo} offer.`);
     }
 
-    // ── ATTACH EVENT LISTENERS ───────────────────────────────────
     document.getElementById("cw-chat-bubble")?.addEventListener("click", toggleChat);
     document.getElementById("cw-close-chat")?.addEventListener("click", toggleChat);
     document.getElementById("cw-send-btn")?.addEventListener("click", () => send());
@@ -307,7 +339,6 @@ YOUR JOB:
     document.getElementById("cw-close-modal-btn")?.addEventListener("click", claimOffer);
     document.getElementById("cw-maybe-later")?.addEventListener("click", closeModal);
 
-    // Exit intent
     const exitHandler = (e) => {
       if (e.clientY < 10 && !S.hasPopped) {
         document.getElementById("cw-exit-modal")?.classList.add("cw-active");
@@ -315,19 +346,12 @@ YOUR JOB:
       }
     };
     document.addEventListener("mousemove", exitHandler);
-
-    // ── INIT ─────────────────────────────────────────────────────
     loadSheet();
-
-    return () => {
-      document.removeEventListener("mousemove", exitHandler);
-    };
+    return () => document.removeEventListener("mousemove", exitHandler);
   }, []);
 
-  // ── JSX MARKUP ────────────────────────────────────────────────
   return (
     <div id="cw-widget-wrapper">
-      {/* Exit Modal */}
       <div id="cw-exit-modal">
         <div className="cw-modal-offer">Don't Leave Yet! 🚀</div>
         <div className="cw-modal-text">Get a free demo before you go.</div>
@@ -335,15 +359,11 @@ YOUR JOB:
         <button className="cw-close-modal-btn" id="cw-close-modal-btn">Claim Offer</button>
         <p className="cw-maybe-later-link" id="cw-maybe-later">Maybe later</p>
       </div>
-
-      {/* Chat Bubble */}
       <div id="cw-chat-bubble">
-        <svg style={{ width: "30px", height: "30px", fill: "#0066fe" }} viewBox="0 0 24 24">
-          <path d="M2.78,20.06L14.06,8.78L12.65,7.37L20.03,0L23.56,3.54L19.32,7.78L20.73,9.19L17.2,12.73L15.79,11.31L4.5,22.6L2.78,20.06Z"/>
+        <svg style={{ width:"30px", height:"30px", fill:"#000" }} viewBox="0 0 24 24">
+          <path d="M19,9L17.75,11.75L15,13L17.75,14.25L19,17L20.25,14.25L23,13L20.25,11.75L19,9M9,5L7,11L1,13L7,15L9,21L11,15L17,13L11,11L9,5M19,1L18.25,2.75L16.5,3.5L18.25,4.25L19,6L19.75,4.25L21.5,3.5L19.75,2.75L19,1Z"/>
         </svg>
       </div>
-
-      {/* Chat Window */}
       <div id="cw-chat-window">
         <div id="cw-chat-header">
           <div className="cw-header-title">
@@ -353,7 +373,7 @@ YOUR JOB:
               <span>● Active Now</span>
             </div>
           </div>
-          <span id="cw-close-chat" style={{ cursor: "pointer", color: "#ffffff", fontSize: "18px" }}>✕</span>
+          <span id="cw-close-chat" style={{ cursor:"pointer", color:"#666", fontSize:"18px" }}>✕</span>
         </div>
         <div id="cw-response-container"></div>
         <div className="cw-input-area">
