@@ -14,6 +14,7 @@ import {
   Plug,
   Cpu
 } from 'lucide-react';
+import ChatWidget from "./components/ChatWidget.jsx";  // ← still needed
 
 // --- Components ---
 
@@ -520,6 +521,7 @@ export default function App() {
       <WhyUs />
       <Contact />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
