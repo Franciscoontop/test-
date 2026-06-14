@@ -14,7 +14,6 @@ import {
   Star,
   CheckCircle2
 } from 'lucide-react';
-import ChatWidget from "./components/ChatWidget.jsx";
 
 // --- Components ---
 
@@ -473,7 +472,6 @@ export default function App() {
       <WhyUs />
       <Contact />
       <Footer />
-      <ChatWidget />
     </div>
   );
 }
