@@ -14,7 +14,7 @@ import {
   Plug,
   Cpu
 } from 'lucide-react';
-
+import ChatWidget from "./components/ChatWidget.jsx"; // ← top of file
 // --- Components ---
 
 const Navbar = () => {
@@ -520,6 +520,7 @@ export default function App() {
       <WhyUs />
       <Contact />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
