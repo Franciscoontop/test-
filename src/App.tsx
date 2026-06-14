@@ -14,7 +14,7 @@ import {
   Star,
   CheckCircle2
 } from 'lucide-react';
-
+import ChatWidget from "./components/ChatWidget.jsx";  // ← still needed
 // --- Components ---
 
 const Navbar = () => {
@@ -472,6 +472,7 @@ export default function App() {
       <WhyUs />
       <Contact />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
